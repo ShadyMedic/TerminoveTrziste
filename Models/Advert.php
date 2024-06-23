@@ -4,6 +4,10 @@ namespace TerminoveTrziste\Models;
 
 use DateTime;
 
+/**
+ * Model for an advert that can be listed on the board
+ * @author Jan Štěch
+ */
 class Advert
 {
     /**
@@ -60,7 +64,7 @@ class Advert
      * @param string $sisLink URL leading to the SIS webpage with this exam date's details
      * @return bool True if the URL was parsed successfully and data loaded, FALSE otherwise
      */
-    public function loadFromSis(string $sisLink) : bool
+    public function loadFromSis(string $sisLink): bool
     {
         // TODO
     }
@@ -70,7 +74,7 @@ class Advert
      * @param int $examDateSisId SIS ID of the offered exam date
      * @return bool TRUE if the data could be loaded (downloaded), FALSE otherwise
      */
-    private function loadFromSisId(int $examDateSisId) : bool
+    private function loadFromSisId(int $examDateSisId): bool
     {
         // TODO
     }
@@ -80,7 +84,7 @@ class Advert
      * @param string $sisLink URL address of an exam date details webpage
      * @return bool TRUE if the ID could be extracted, False otherwise
      */
-    private function extractSisId(string $sisLink) : bool
+    private function extractSisId(string $sisLink): bool
     {
         // TODO
     }
@@ -107,7 +111,7 @@ class Advert
      * @param array $dates Array of wanted exam dates (['YYYY-MM-DD','YYYY-MM-DD','YYYY-MM-DD'])
      * @return array Array of all the advert instances bound to the current operation ($this included)
      */
-    public function replicateForSearches(array $dates) : array
+    public function replicateForSearches(array $dates): array
     {
         // TODO
     }
