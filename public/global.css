@@ -43,6 +43,12 @@ summary {
     text-decoration: underline;
 }
 
+.error {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
 input:not([type="submit"]) {
     background-color: #f7ff8c;
     font-family: monospace;

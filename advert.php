@@ -15,19 +15,18 @@ if ($adverts === false) {
     exit("<h1>Error 403 Forbidden</h1><h2>Token is incorrect.</h2><a href='/'>Back to homepage</a>");
 }
 
+$advert = $adverts[0]->generalize();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($adverts as $advert) {
-        $advert->replicateForSearches(['2024-06-25', '2024-06-26']); //$_POST['counteroffer']
+        $advert->replicateForSearches($_POST['counteroffer']);
     }
+    $advert->activate();
 }
-
-$advert = $adverts[0]->generalize();
 
 if (isset($_POST['sendmail'])) {
     $advert->sendCreationMail();
 }
-
-$aManager->activateAllRelated($advert->getToken());
 
 $uniqueSearchDates = (new \TerminoveTrziste\Models\AdvertManager())->listSearchesAmongRelated($advert->getToken());
 

@@ -239,18 +239,54 @@ class Advert
 
     /**
      * Method connecting to SIS and loading available future exam dates for the subject of this advert's author
-     * @return array Array of available exam dates (['YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm'])
+     * @return array|false Array of available exam dates (['YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm']),
+     * FALSE if the data couldn't be loaded
      */
-    public function loadAvailableCounteroffers(): array
+    public function loadAvailableCounteroffers(): array|false
     {
-        //TODO
-        return [
-            '2024-06-26 08:00','2024-06-26 13:00',
-            '2024-06-27 08:00','2024-06-27 13:00',
-            '2024-06-28 08:00','2024-06-28 13:00',
-            '2024-06-29 08:00','2024-06-29 13:00',
-            '2024-06-30 08:00','2024-06-30 13:00',
-        ];
+        $result = Db::fetchQuery('SELECT faculty,department FROM subject WHERE code = ?;', [$this->subjectCode]);
+        $fac = $result['faculty'];
+        $dep = $result['department'];
+        $sub = $this->subjectCode;
+        $html = file_get_contents(
+            "https://is.cuni.cz/studium/eng/term_st2/index.php?".
+            "do=zapsat&".
+            "fakulta=$fac&".
+            "ustav=$dep&".
+            "povinn_mode=text&".
+            "povinn=$sub&".
+            "budouci=1&".
+            "volne=0".
+            "&pocet=1000&".
+            "btn_hledat=Search"
+        );
+        if ($html === false) {
+            return false;
+        }
+
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new DOMXPath($dom);
+
+        //Load the table rows with exam dates (we're interested in date)
+        $select = $xpath->query('.//div[@id="content"]/table[@class="tab1"]');
+        if ($select->count() === 0) {
+            return false;
+        }
+        $table = $select->item(0);
+        if (is_null($table)) {
+            return false;
+        }
+        $rows = $xpath->query('.//tr[@class="row1" or @class="row2"]', $table);
+        if ($rows->count() === 0) {
+            return [];
+        }
+        $dates = [];
+        foreach ($rows as $row) {
+            $dateString = $xpath->query('./td[8]', $row)->item(0)->nodeValue;
+            $dates[] = DateTime::createFromFormat('M j, Y - l', $dateString)->format('Y-m-d');
+        }
+        return $dates;
     }
 
     /**
@@ -390,32 +426,32 @@ class Advert
     }
 
     /**
-     * Activates this advert (sets the $active attribute to TRUE)
+     * Activates this advert and all of its relatives (created with it)
      * @return void
      */
     public function activate()
     {
         $this->active = true;
-        Db::executeQuery('UPDATE advert SET active = 1 WHERE id = ?', [$this->id]);
+        Db::executeQuery('UPDATE advert SET active = 1 WHERE token = ?;', [$this->token]);
     }
 
     /**
-     * Deactivates this advert (sets the $active attribute to FALSE)
+     * Deactivates this advert and all of its relatives (created with it)
      * @return void
      */
     public function deactivate()
     {
         $this->active = false;
-        Db::executeQuery('UPDATE advert SET active = 0 WHERE id = ?', [$this->id]);
+        Db::executeQuery('UPDATE advert SET active = 0 WHERE token = ?;', [$this->token]);
     }
 
     /**
-     * Deletes this advert from the database
+     * Deletes this advert and all of its relatives from the database
      * @return void
      */
     public function delete()
     {
-        Db::executeQuery('DELETE FROM advert WHERE id = ?', [$this->id]);
+        Db::executeQuery('DELETE FROM advert WHERE token = ?', [$this->token]);
     }
 
     /**

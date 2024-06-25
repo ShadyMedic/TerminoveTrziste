@@ -13,7 +13,7 @@ class AdvertManager
     /**
      * Class returning list of advert objects, sharing the same token (created together)
      * @param string $token Shared token among all searched adverts
-     * @return array|false Array of advert objects or FALSE if no adverts with this token were found
+     * @return Advert[]|false Array of advert objects or FALSE if no adverts with this token were found
      */
     public function loadRelatedAdverts(string $token) : array|false
     {
@@ -37,11 +37,6 @@ class AdvertManager
     {
         $result = Db::fetchQuery('SELECT DISTINCT search FROM advert WHERE token = ?;', [$token], true);
         return array_column($result, 0);
-    }
-
-    public function activateAllRelated(string $token) : bool
-    {
-        return Db::executeQuery('UPDATE advert SET active = 1 WHERE token = ?;', [$token]);
     }
 }
 

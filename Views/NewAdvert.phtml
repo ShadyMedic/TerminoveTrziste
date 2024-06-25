@@ -76,13 +76,18 @@
                 <p style="text-align: center;">
                     <input type="submit" value="Continue" style="font-size: 1.5em; font-weight: bold;">
                 </p>
+                <?php if(isset($_GET['e'])) : ?>
+                    <p class="error">
+                        <?= ($_GET['e'] === 'email') ? 'Invalid e-mail address' : 'Invalid exam date link'?>
+                    </p>
+                <?php endif ?>
             </fieldset>
         </form>
     </article>
 </section>
 <footer>
     <p>
-        Don't you dare complain about this website's design. I'm a programmer (and medic), not a designer ;-)<br>
+        Don't dare complaining about this website's design. I'm a programmer (and medic), not a designer ;-)<br>
         If you'd like to improve the design, just submit a pull request on this website's public
         <a href="https://github.com/ShadyMedic/TerminoveTrziste/" target="_blank">GitHub repository</a>.
     </p>
