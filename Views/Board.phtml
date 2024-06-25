@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active offers</title>
+    <link rel="stylesheet" href="/public/global.css">
+</head>
+<body>
+<section>
+    <header>
+        <h1>
+            Currently active offers
+        </h1>
+    </header>
+    <article>
+        <?php if (empty($adverts)) : ?>
+            <p class="error">No adverts for this subject found.</p>
+            <p style="text-align: center;">How about <a href="/new.php">creating one</a>?</p>
+        <?php else : ?>
+            <table border="1" style="border-collapse: collapse">
+                <tr>
+                    <th colspan="2">Subject</th>
+                    <th>Wanted exam date</th>
+                    <th colspan="2">Offered exam date</th>
+                    <th>React</th>
+                </tr>
+                <?php foreach ($adverts as $advert) : ?>
+                    <tr>
+                        <td style="text-align: left;"><?= $advert->getSubject() ?></td>
+                        <td>
+                            <a href="https://is.cuni.cz/studium/eng/predmety/index.php?do=predmet&kod=<?= $advert->getSubjectCode() ?>"
+                               target="_blank">
+                                SIS
+                            </a>
+                        </td>
+                        <td >
+                            <?= DateTime::createFromFormat('l, jS F', $advert->getSearch())->format('l') ?>
+                            <br>
+                            <?= DateTime::createFromFormat('l, jS F', $advert->getSearch())->format('jS F') ?>
+                        </td>
+                        <td >
+                            <?= DateTime::createFromFormat('l, jS F', $advert->getOffer())->format('l') ?>
+                            <br>
+                            <?= DateTime::createFromFormat('l, jS F', $advert->getOffer())->format('jS F') ?>
+                        </td>
+                        <td >
+                            <a href="<?= $advert->getSisLink() ?>"
+                               target="_blank">
+                               SIS
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/react.php?advert=<?= $advert->getId() ?>">
+                                <button style="background-color: #7cb6ff; font-size: 2em;">📧</button>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </table>
+        <?php endif ?>
+    </article>
+</section>
+<footer>
+    <p>
+        Don't dare complaining about this website's design. I'm a programmer (and medic), not a designer ;-)<br>
+        If you'd like to improve the design, just submit a pull request on this website's public
+        <a href="https://github.com/ShadyMedic/TerminoveTrziste/" target="_blank">GitHub repository</a>.
+    </p>
+</footer>
+</body>
+</html>

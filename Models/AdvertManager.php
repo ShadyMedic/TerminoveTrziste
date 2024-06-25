@@ -38,5 +38,40 @@ class AdvertManager
         $result = Db::fetchQuery('SELECT DISTINCT search FROM advert WHERE token = ?;', [$token], true);
         return array_column($result, 0);
     }
+
+    /**
+     * Method loading all active adverts for a certain subject code
+     * @param string $subjectCode Code of subject to filter by
+     * @return Advert[]|false Array of found Advert objects
+     */
+    public function loadAdvertsForSubject(string $subjectCode) : array|false
+    {
+        $result = Db::fetchQuery('SELECT * FROM advert WHERE subject_code = ? AND active = 1;', [$subjectCode], true);
+        $adverts = [];
+        if ($result === false) {
+            return false;
+        }
+        foreach ($result as $record) {
+            $adverts[] = new Advert($record);
+        }
+        return $adverts;
+    }
+
+    /**
+     * Method loading all active adverts
+     * @return Advert[]|false Array of found Advert objects
+     */
+    public function loadAdverts()
+    {
+        $result = Db::fetchQuery('SELECT * FROM advert WHERE active = 1;', [], true);
+        $adverts = [];
+        if ($result === false) {
+            return false;
+        }
+        foreach ($result as $record) {
+            $adverts[] = new Advert($record);
+        }
+        return $adverts;
+    }
 }
 

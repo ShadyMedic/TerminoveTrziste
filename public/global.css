@@ -54,6 +54,11 @@ input:not([type="submit"]) {
     font-family: monospace;
 }
 
+td, th {
+    text-align: center;
+    padding: 0 4px;
+}
+
 .flex {
     display: flex;
     justify-content: center;

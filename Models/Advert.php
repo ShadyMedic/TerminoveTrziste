@@ -240,7 +240,7 @@ class Advert
     /**
      * Method connecting to SIS and loading available future exam dates for the subject of this advert's author
      * @return array|false Array of available exam dates (['YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm']),
-     * FALSE if the data couldn't be loaded
+     * with duplicate record removed (when there are multiple exams at the same day); FALSE if the data couldn't be loaded
      */
     public function loadAvailableCounteroffers(): array|false
     {
@@ -249,15 +249,15 @@ class Advert
         $dep = $result['department'];
         $sub = $this->subjectCode;
         $html = file_get_contents(
-            "https://is.cuni.cz/studium/eng/term_st2/index.php?".
-            "do=zapsat&".
-            "fakulta=$fac&".
-            "ustav=$dep&".
-            "povinn_mode=text&".
-            "povinn=$sub&".
-            "budouci=1&".
-            "volne=0".
-            "&pocet=1000&".
+            "https://is.cuni.cz/studium/eng/term_st2/index.php?" .
+            "do=zapsat&" .
+            "fakulta=$fac&" .
+            "ustav=$dep&" .
+            "povinn_mode=text&" .
+            "povinn=$sub&" .
+            "budouci=1&" .
+            "volne=0" .
+            "&pocet=1000&" .
             "btn_hledat=Search"
         );
         if ($html === false) {
@@ -286,7 +286,7 @@ class Advert
             $dateString = $xpath->query('./td[8]', $row)->item(0)->nodeValue;
             $dates[] = DateTime::createFromFormat('M j, Y - l', $dateString)->format('Y-m-d');
         }
-        return $dates;
+        return array_unique($dates);
     }
 
     /**
@@ -360,6 +360,15 @@ class Advert
         return $instances;
     }
 
+    /**
+     * Getter for the $id attribute
+     * @return string The id of this advert
+     */
+    public function getId() : int
+    {
+        return $this->id;
+    }
+
     public function getSisLink()
     {
         return 'https://is.cuni.cz/studium/eng/term_st2/index.php?do=zapsat&sub=detail&ztid=' . $this->offerSisId;
@@ -372,6 +381,24 @@ class Advert
     public function isActive(): bool
     {
         return $this->active;
+    }
+
+    /**
+     * Getter for the $subject attribute
+     * @return string The name of the subject
+     */
+    public function getSubject() : string
+    {
+        return $this->subject;
+    }
+
+    /**
+     * Getter for the $subjectCode attribute
+     * @return string The code of the subject
+     */
+    public function getSubjectCode() : string
+    {
+        return $this->subjectCode;
     }
 
     /**

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search offers</title>
+    <link rel="stylesheet" href="/public/global.css">
+</head>
+<body>
+<section>
+    <header>
+        <h1>
+            Filter by your subject
+        </h1>
+    </header>
+    <article>
+        <p>To search for offers available for your subject, we need to know its <strong>SIS code</strong>.</p>
+        <fieldset>
+            <form method="get" action="/board.php">
+                <p style="text-align: center;">
+                    <input type="text" name="subject" placeholder="Your subject's code" required>
+                </p>
+                <p style="text-align: center;">
+                    <input type="submit" value="Load Adverts" style="font-size: 1.5em; font-weight: bold;">
+                </p>
+            </form>
+        </fieldset>
+        <p>Don't know the code? You can search for it by your subject's name.</p>
+        <fieldset>
+            <form method="get">
+                <input type="search" name="search" placeholder="Your subject's name (substring search)"
+                       style="width: 85%; background-color: unset;">
+                <input type="submit" value="Load Codes">
+                <p>
+                    <small style="line-height: 0.5em;">
+                        Typing "phy" will find "<b>Phy</b>siology", "Patho<b>phy</b>siology" and more. It's
+                        case-insensitive.
+                    </small>
+                </p>
+                <div id="available-codes">
+                    <ul>
+                        <?php foreach ($loadedCodes as $code => $name) : ?>
+                            <li><a href="/board.php?subject=<?= $code ?>">[<?= $code ?>] <?= $name ?></a></li>
+                        <?php endforeach ?>
+                    </ul>
+                </div>
+            </form>
+        </fieldset>
+    </article>
+</section>
+<section>
+    <h2>Or, <a href="/board.php">display all</a></h2>
+</section>
+<footer>
+    <p>
+        Don't dare complaining about this website's design. I'm a programmer (and medic), not a designer ;-)<br>
+        If you'd like to improve the design, just submit a pull request on this website's public
+        <a href="https://github.com/ShadyMedic/TerminoveTrziste/" target="_blank">GitHub repository</a>.
+    </p>
+</footer>
+</body>
+</html>
