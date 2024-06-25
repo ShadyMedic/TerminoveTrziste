@@ -19,7 +19,7 @@ class Db
         PDO::ATTR_EMULATE_PREPARES => false
     );
 
-    private const DB_HOST = 'localhost';
+    private const DB_HOST = '127.0.0.1';
     private const DB_USER = 'root';
     private const DB_PASS = '';
     private const DB_NAME = 'exam-marketplace';
@@ -51,6 +51,7 @@ class Db
                 return self::$connection->lastInsertId();
             }
         } catch (PDOException $e) {
+            print_r($e);
             throw new DatabaseException('Database query wasn\'t executed successfully.', null, $e, $query,
                 $e->getCode(), $e->errorInfo[2]);
         }

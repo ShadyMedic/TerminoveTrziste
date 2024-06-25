@@ -1,0 +1,83 @@
+/* Taken from https://perfectmotherfuckingwebsite.com/ Licenmce CC0*/
+body {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 0 10px;
+    font: 18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    color: #444
+}
+
+h1, h2, h3 {
+    line-height: 1.2
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: #c9d1d9;
+        background: #0d1117
+    }
+
+    a:link {
+        color: #58a6ff
+    }
+
+    a:visited {
+        color: #8e96f0
+    }
+}
+
+/* End of styles taken from https://perfectmotherfuckingwebsite.com/ */
+
+footer {
+    font-size: 0.7em;
+    opacity: 0.7;
+}
+
+img {
+    max-width: 100%;
+    border: 3px outset gray;
+}
+
+summary {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+input:not([type="submit"]) {
+    background-color: #f7ff8c;
+    font-family: monospace;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    gap: 10%
+}
+
+.flex > a {
+    flex: 1;
+    width: fit-content;
+    max-width: 45%;
+    padding: 2em 0;
+    transition: background-color 0.5s;
+    border: 3px solid #0373a3;
+    border-radius: 32px;
+    background-color: #80bbff;
+    text-align: center;
+    text-decoration: unset;
+    color: unset;
+}
+
+.flex > a:hover {
+    background-color: #9bf08e;
+    border-color: #16a300;
+    animation: ease-in;
+}
+
+.advert-details {
+    font-family: monospace;
+    border: 2px solid gray;
+    border-radius: 4px;
+    background-color: #eee;
+    padding: 0 8px;
+}

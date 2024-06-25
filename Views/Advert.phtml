@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New advert</title>
+    <link rel="stylesheet" href="/public/global.css">
+</head>
+<body>
+<section>
+    <header>
+        <h1>
+            Your advert is currently <u><?= $advert->isActive() ? 'active and listed' : 'deactivated and hidden' ?></u>.
+        </h1>
+    </header>
+    <article>
+        <p>
+            You can change the visibility status of your advert or delete it here. If you need to edit something, please
+            delete this advert and create a new one.
+        </p>
+        <form class="flex">
+            <input type="hidden" value="<?= $advert->getToken() ?>">
+            <?php if ($advert->isActive()) : ?>
+                <input type="submit" name="action" value="Deactivate Advert"
+                       style="font-size: 1.5em; background-color: #dfdc44; width: 45%">
+            <?php else : ?>
+                <input type="submit" name="action" value="Activate Advert"
+                       style="font-size: 1.5em; background-color: #99df44; width: 45%;">
+            <?php endif ?>
+            <input type="submit" name="action" value="Delete Advert"
+                   style="font-size: 1.5em; background-color: #df4444; width: 45%;">
+        </form>
+        <p>
+            Please note that your adverts (and all information associated with them, for example your e-mail address)
+            are automatically deleted some time after the day of the exam date you're offering passes.
+        </p>
+    </article>
+</section>
+<section>
+    <header>
+        <h2>Details of your advert</h2>
+    </header>
+    <article class="advert-details">
+        <div>
+            <strong>Contact e-mail</strong>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <?= $advert->getEmail(); ?>
+        </div>
+        <div>
+            <strong>Exam date offered by you</strong>
+            : <?= $advert->getOffer() ?> (<a href="<?= $advert->getSisLink() ?>" target="_blank">view</a>)
+        </div>
+        <div>
+            <strong>Exam dates you want</strong>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <?= DateTime::createFromFormat('Y-m-d', array_shift($uniqueSearchDates))->format('l, jS F'); ?>
+        </div>
+        <?php foreach ($uniqueSearchDates as $date) : ?>
+            <span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <?= DateTime::createFromFormat('Y-m-d', $date)->format('l, jS F'); ?>
+            </span>
+        <?php endforeach ?>
+    </article>
+</section>
+<footer>
+    <p>
+        Don't you dare complain about this website's design. I'm a programmer (and medic), not a designer ;-)<br>
+        If you'd like to improve the design, just submit a pull request on this website's public
+        <a href="https://github.com/ShadyMedic/TerminoveTrziste/" target="_blank">GitHub repository</a>.
+    </p>
+</footer>
+</body>
+</html>

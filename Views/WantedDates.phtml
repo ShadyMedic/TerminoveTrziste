@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New advert</title>
+    <link rel="stylesheet" href="/public/global.css">
+</head>
+<body>
+<section>
+    <header>
+        <h1>Exam dates you'd like</h1>
+    </header>
+    <article>
+        <p>
+            Below are all future exam dates for your subject that were loaded right from SIS. Pick all that are
+            acceptable for you.
+        </p>
+        <form method="post" action="/advert.php">
+            <input type="hidden" name="token" value="<?= $advert->getToken() ?>">
+            <fieldset style="column-count: 2; column-gap: 2.5px;">
+                <?php foreach ($counteroffers as $counteroffer) : ?>
+                    <div>
+                        <input type="checkbox" id="counteroffer<?= strtr($counteroffer, " :", "--") ?>"
+                               name="counteroffer[]" value="<?= $counteroffer ?>">
+                        <label for="counteroffer<?= strtr($counteroffer, " :", "--") ?>">
+                            <?= DateTime::createFromFormat('Y-m-d H:i', $counteroffer)->format('l, jS F'); ?>
+                        </label>
+                    </div>
+                <?php endforeach ?>
+            </fieldset>
+            <fieldset>
+                <p>And we're done here! Just one more thing.</p>
+                <p>
+                    <input type="checkbox" name="sendmail" id="onetime-mail" checked>
+                    <label for="onetime-mail">
+                        I'm okay with receiving a <strong>one-time e-mail</strong> containing a link through which I can
+                        disable or delete this advert anytime later.
+                    </label>
+                </p>
+                <p style="text-align: center;">
+                    <input type="submit" value="Publish Advert" style="font-size: 1.5em; font-weight: bold;">
+                </p>
+            </fieldset>
+        </form>
+    </article>
+</section>
+<footer>
+    <p>
+        Don't you dare complain about this website's design. I'm a programmer (and medic), not a designer ;-)<br>
+        If you'd like to improve the design, just submit a pull request on this website's public
+        <a href="https://github.com/ShadyMedic/TerminoveTrziste/" target="_blank">GitHub repository</a>.
+    </p>
+</footer>
+</body>
+</html>

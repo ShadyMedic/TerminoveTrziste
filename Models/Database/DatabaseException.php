@@ -2,6 +2,8 @@
 
 namespace TerminoveTrziste\Models\Database;
 
+use PDOException;
+
 class DatabaseException extends \Exception
 {
 
@@ -15,5 +17,6 @@ class DatabaseException extends \Exception
      */
     public function __construct(string $string, $null, $e, string $query, $getCode, $int)
     {
+        parent::__construct($string, $null, $e);
     }
 }

@@ -18,33 +18,33 @@ class Advert
      */
     private int $id;
     /**
-     * @var string SIS code of the subject
+     * @var string|null SIS code of the subject
      */
-    private string $subjectCode;
+    private ?string $subjectCode = null;
     /**
-     * @var string Name of the subject (loaded from SIS by its code)
+     * @var string|null Name of the subject (loaded from SIS by its code)
      */
-    private string $subject;
+    private ?string $subject = null;
     /**
-     * @var int SIS ID of the offered subject date
+     * @var int|null SIS ID of the offered subject date
      */
-    private int $offerSisId;
+    private ?int $offerSisId = null;
     /**
-     * @var string Offered exam date (YYYY-MM-DD format)
+     * @var string|null Offered exam date (YYYY-MM-DD format)
      */
-    private string $offer;
+    private ?string $offer = null;
     /**
-     * @var string Exam date wanted in return (YYYY-MM-DD format)
+     * @var string|null Exam date wanted in return (YYYY-MM-DD format)
      */
-    private string $search;
+    private ?string $search = null;
     /**
      * @var string Deletion token of this advert
      */
     private string $token;
     /**
-     * @var string Contact e-mail of this advert's author
+     * @var string|null Contact e-mail of this advert's author
      */
-    private string $email;
+    private ?string $email = null;
     /**
      * @var bool Whether this advert should be currently listed on the board
      */
@@ -54,6 +54,51 @@ class Advert
      */
     private bool $highlight = false;
 
+    /**
+     * Constructor capable of filling-in all attributes when given associative array of database row for any advert
+     * @param array|null $dbRecord Associative array returned by PDO representing an advert saved in a database table row
+     */
+    public function __construct(array $dbRecord = null)
+    {
+        if (is_null($dbRecord)) {
+            return;
+        }
+
+        foreach ($dbRecord as $dbColumn => $dbValue) {
+            switch ($dbColumn) {
+                case 'id':
+                    $this->id = $dbValue;
+                    break;
+                case 'subject_code':
+                    $this->subjectCode = $dbValue;
+                    break;
+                case 'subject':
+                    $this->subject = $dbValue;
+                    break;
+                case 'offer_sis_id':
+                    $this->offerSisId = $dbValue;
+                    break;
+                case 'offer':
+                    $this->offer = $dbValue;
+                    break;
+                case 'search':
+                    $this->search = $dbValue;
+                    break;
+                case 'token':
+                    $this->token = $dbValue;
+                    break;
+                case 'email':
+                    $this->email = $dbValue;
+                    break;
+                case 'active':
+                    $this->active = $dbValue;
+                    break;
+                case 'highlight':
+                    $this->highlight = $dbValue;
+                    break;
+            }
+        }
+    }
 
     /**
      * Method creating a new database record for this advert and generating values for:
@@ -74,7 +119,7 @@ class Advert
      * @return array|false Numerical array of subjects that this exam date was created for (containing associative arrays
      *  with keys "Name" and "Code", if everything was set up correctly, FALSE otherwise
      */
-    public function loadFromSis(string $sisLink): bool
+    public function loadFromSis(string $sisLink): array|false
     {
         //Make sure the link leads to the English version of SIS
         if (!str_contains($sisLink, 'is.cuni.cz/studium/eng/')) {
@@ -96,8 +141,8 @@ class Advert
      */
     private function loadFromSisId(int $examDateSisId): array|false
     {
-        $html = file_get_contents($examDateSisId);
-
+        $this->offerSisId = $examDateSisId;
+        $html = file_get_contents($this->getSisLink());
         if ($html === false) {
             return false;
         }
@@ -108,7 +153,7 @@ class Advert
 
         //Load general exam date info (we're interested in date and time)
         $examDateDetails = array();
-        $select = $xpath->query('//div[@class="form_div"]/table[@class="tab1"]');
+        $select = $xpath->query('.//div[@class="form_div pageBlock"]/table[@class="tab1"]');
         if ($select->count() === 0) {
             return false;
         }
@@ -121,10 +166,9 @@ class Advert
             return false;
         }
         foreach ($rows as $row) {
-            $cells = $row->getElementsByTagName('td');
-            $key = trim(strip_tags($cells->item(0)->nodeValue), " \n\r\t\v\0:");
-            $value = strip_tags($cells->item(1)->nodeValue);
-            $data[$key] = $value;
+            $key = trim(strip_tags($row->getElementsByTagName('th')->item(0)->nodeValue), " \n\r\t\v\0:");
+            $value = strip_tags($row->getElementsByTagName('td')->item(0)->nodeValue);
+            $examDateDetails[$key] = $value;
             /* The table selected by DOMXPath looks like this:
                 <table class="tab1">
                     <tbody>
@@ -164,11 +208,8 @@ class Advert
             */
         }
 
-        $this->offerSisId = $examDateSisId;
-        $this->offer = DateTime::createFromFormat('M j, Y;l H:i', $examDateDetails['Date'] . ';' . $examDateDetails['Time'])->format("Y-m-d H:i");
-
-        Db::executeQuery("UPDATE advert SET offer_sis_id = ? AND offer = ? WHERE id = ?;", [$this->offerSisId, $this->offer]);
-
+        $this->offer = DateTime::createFromFormat('M j, Y - l;H:i', $examDateDetails['Date'] . ';' . $examDateDetails['Time'])->format("Y-m-d H:i");
+        Db::executeQuery("UPDATE advert SET offer_sis_id = ?, offer = ? WHERE id = ?;", [$this->offerSisId, $this->offer, $this->id]);
         return $subjectsDetails;
     }
 
@@ -197,6 +238,22 @@ class Advert
     }
 
     /**
+     * Method connecting to SIS and loading available future exam dates for the subject of this advert's author
+     * @return array Array of available exam dates (['YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm','YYYY-MM-DD hh:mm'])
+     */
+    public function loadAvailableCounteroffers(): array
+    {
+        //TODO
+        return [
+            '2024-06-26 08:00','2024-06-26 13:00',
+            '2024-06-27 08:00','2024-06-27 13:00',
+            '2024-06-28 08:00','2024-06-28 13:00',
+            '2024-06-29 08:00','2024-06-29 13:00',
+            '2024-06-30 08:00','2024-06-30 13:00',
+        ];
+    }
+
+    /**
      * Method replicating the current instance for every subject the offered exam date was created for,
      * keeping the following attributes:
      * - $offerSisId
@@ -212,18 +269,23 @@ class Advert
     public function replicateForSubjects(array $subjects): array
     {
         $firstSubject = array_shift($subjects);
-        $this->subject = $firstSubject["Name"];
         $this->subjectCode = $firstSubject["Code"];
+        $this->subject = $firstSubject["Name"];
+        Db::executeQuery(
+            'UPDATE advert SET subject_code = ?, subject = ? WHERE id = ?;',
+            [$this->subjectCode, $this->subject, $this->id]
+        );
         $instances = [$this];
-
-        // TODO
         foreach ($subjects as $subject) {
             $clone = clone $this;
             $clone->id = Db::executeQuery(
                 'INSERT INTO advert(subject_code, subject, offer_sis_id, offer, token, email, active, highlight) VALUES (?,?,?,?,?,?,?,?);',
-                [$subject["Code"], $subject["Name"], $this->offerSisId, $this->offer, $this->token, $this->email, $this->active, $this->highlight],
+                [$subject["Code"], $subject["Name"], $this->offerSisId, $this->offer, $this->token, $this->email, (int)$this->active, (int)$this->highlight],
                 true
             );
+            $clone->subjectCode = $subject['Code'];
+            $clone->subject = $subject['Name'];
+            $instances[] = $clone;
         }
 
         return $instances;
@@ -252,9 +314,11 @@ class Advert
             $clone = clone $this;
             $clone->id = Db::executeQuery(
                 'INSERT INTO advert(subject_code, subject, offer_sis_id, offer, search, token, email, active, highlight) VALUES (?,?,?,?,?,?,?,?,?);',
-                [$this->subjectCode, $this->subject, $this->offerSisId, $this->offer, $date, $this->token, $this->email, $this->active, $this->highlight],
+                [$this->subjectCode, $this->subject, $this->offerSisId, $this->offer, $date, $this->token, $this->email, (int)$this->active, (int)$this->highlight],
                 true
             );
+            $clone->search = $date;
+            $instances[] = $clone;
         }
 
         return $instances;
@@ -262,7 +326,67 @@ class Advert
 
     public function getSisLink()
     {
-        return 'https://is.cuni.cz/studium/term_st2/index.php?do=zapsat&sub=detail&ztid=' . $this->offerSisId;
+        return 'https://is.cuni.cz/studium/eng/term_st2/index.php?do=zapsat&sub=detail&ztid=' . $this->offerSisId;
+    }
+
+    /**
+     * Getter for the $active attribute
+     * @return bool Whether this advert is currently active
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Getter for the $offer attribute
+     * @return string Exam date offered by the advert's author, formatted into string like "Monday, 24th June"
+     */
+    public function getOffer(): string
+    {
+        return DateTime::createFromFormat('Y-m-d H:i:s', $this->offer)->format('l, jS F');
+    }
+
+    /**
+     * Getter for the $search attribute
+     * @return string Exam date wanted in exhange for the offer, formatted into string like "Monday, 24th June"
+     */
+    public function getSearch(): string
+    {
+        return DateTime::createFromFormat('Y-m-d', $this->search)->format('l, jS F');
+    }
+
+    /**
+     * Getter for the $token attribute
+     * @return string The token of this advert
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
+     * Getter for the e-mail attribute
+     * @return string|null E-mail of this advert's author
+     */
+    public function getEmail(): string|null
+    {
+        return $this->email;
+    }
+
+    /**
+     * Method returning a clone of this advert with all its variable attributes (attributes that differ between related
+     * adverts, specifically $subjectCode, $subject and $search) set to null. This clone is not saved in the database
+     * and should be used for read-only operations.
+     * @return Advert
+     */
+    public function generalize(): advert
+    {
+        $clone = clone $this;
+        $clone->subjectCode = null;
+        $clone->subject = null;
+        $clone->search = null;
+        return $clone;
     }
 
     /**
@@ -295,6 +419,35 @@ class Advert
     }
 
     /**
+     * Method sending a one-time e-mail to the advert's author upon advert creation
+     * @return bool
+     */
+    public function sendCreationMail(): bool
+    {
+        $headers = [
+            'From' => 'Exam Date Marketplace <no-reply@̈́' . $_SERVER['SERVER_NAME'] . '>',
+            'Content-Type' => 'text/plain; charset=UTF-8'
+        ];
+
+        $body =
+            "Hi there.\n" .
+            "You chose to receive a one-time e-mail upon creation of your advert on " . $_SERVER['SERVER_NAME'] . "\n" .
+            "Your advert has successfully been created and published.\n" .
+            "If you want to hide it from listing, start showing it again or delete\n" .
+            "it, you can do it on the following link:\n" .
+            "https://" . $_SERVER['SERVER_NAME'] . "/advert.php?token=" . $this->token . "\n" .
+            "\n" .
+            "Please store this e-mail somewhere save until the deletion of your advert.\n" .
+            "Don't forward this e-mail to anyone, otherwise they'll gain access to your advert's management.\n" .
+            "\n" .
+            "\n" .
+            "This e-mail has been automatically generated.";
+
+        $result = mail($this->email, 'Advert created successfully', $body, implode("\r\n", $headers));
+        return $result;
+    }
+
+    /**
      * Method sending e-mail to this advert's author with a replyTo address and a customized message
      * from the other person wrapped into some preset informational paragraphs
      * This advert will also be deactivated upon successful mail send.
@@ -305,7 +458,7 @@ class Advert
     public function answer(string $replyTo, string $message): bool
     {
         $headers = [
-            'From' => 'Termínové Tržiště <no-reply@̈́' . $_SERVER['SERVER_NAME'] . '>',
+            'From' => 'Exam Date Marketplace <no-reply@̈́' . $_SERVER['SERVER_NAME'] . '>',
             'Content-Type' => 'text/plain; charset=UTF-8'
         ];
 
@@ -326,8 +479,6 @@ class Advert
             "\n" .
             "Reactivate the advert (or delete it instantly):\n" .
             "https://" . $_SERVER['SERVER_NAME'] . "/advert.php?token=" . $this->token . "\n" .
-            "\n" .
-            "Best of luck with your exams!\n" .
             "\n" .
             "\n" .
             "This e-mail has been automatically generated.";
