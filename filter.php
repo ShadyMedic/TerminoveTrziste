@@ -2,7 +2,8 @@
 
 require 'init.php';
 
-//TODO load codes from DB based on $_GET['search']
-$loadedCodes = [];
+if (isset($_GET['search'])) {
+    $loadedCodes = (new \TerminoveTrziste\Models\SubjectManager())->searchSubjects($_GET['search']);
+}
 
 require 'Views/Filter.phtml';

@@ -37,13 +37,15 @@
                         case-insensitive.
                     </small>
                 </p>
-                <div id="available-codes">
-                    <ul>
-                        <?php foreach ($loadedCodes as $code => $name) : ?>
-                            <li><a href="/board.php?subject=<?= $code ?>">[<?= $code ?>] <?= $name ?></a></li>
-                        <?php endforeach ?>
-                    </ul>
-                </div>
+                <?php if (isset($loadedCodes)) : ?>
+                    <div id="available-codes">
+                        <ul>
+                            <?php foreach ($loadedCodes as $code => $name) : ?>
+                                <li><a href="/board.php?subject=<?= $code ?>">[<?= $code ?>] <?= $name ?></a></li>
+                            <?php endforeach ?>
+                        </ul>
+                    </div>
+                <?php endif ?>
             </form>
         </fieldset>
     </article>
