@@ -8,8 +8,6 @@ body {
     padding: 0 10px;
     font: 18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     color: #444;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 h1, h2, h3 {
@@ -33,17 +31,18 @@ h1, h2, h3 {
 /* End of styles taken from https://perfectmotherfuckingwebsite.com/ */
 
 nav {
-    position: relative;
-    top: -30px;
     display: flex;
     justify-content: space-between;
+    width: 100%;
     max-width: 650px;
-    margin: 0 auto;
+    margin: 10px auto;
     color: #444;
     font-size: 0.9rem;
     line-height: 0.9rem;
     padding-bottom: 0.3rem;
     border-bottom: 2px solid #444;
+    position: fixed;
+    top: 0;
 }
 
 nav > a {
@@ -52,16 +51,22 @@ nav > a {
     text-align: center;
 }
 
-section:nth-last-child(2) {
-    margin-bottom: 125px;
+main {
+    max-height: 86vh;
+    overflow-y: auto;
+    height: 86vh;
 }
 
 footer {
+    font-size: 0.65em;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    max-width: 650px;
+    margin: 10px auto 0;
+    border-top: 2px solid #444;
     position: fixed;
     bottom: 0;
-    font-size: 0.7em;
-    opacity: 0.7;
-    text-align: center;
 }
 
 img {
@@ -69,13 +74,17 @@ img {
     border: 3px outset gray;
 }
 
-.donate-btn {
+.donate-btn, .repo-btn {
     border: unset;
-    opacity: unset;
+    height: 30px;
 }
 
 .donate-btn:hover {
     filter: hue-rotate(345deg);
+}
+
+.repo-btn:hover {
+    filter: brightness(105%);
 }
 
 summary {
