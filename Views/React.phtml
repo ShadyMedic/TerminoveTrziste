@@ -1,0 +1,55 @@
+<?php require 'Includes/Head.phtml'; ?>
+<section>
+    <header>
+        <h1>React to the offer</h1>
+    </header>
+    <article>
+        <p>Fill in this contact form, the author of this offer will receive an e-mail and will get back to you.</p>
+        <form method="post">
+            <fieldset>
+                <p>
+                    Your e-mail address is where you might get a reply from the author of this offer.
+                </p>
+                <p>
+                    <strong>
+                        <label for="email-input">Your e-mail address:</label>
+                        <input type="email" maxlength="127" name="email" id="email-input" required style="width: 69%"
+                        value="<?= $_GET['email'] ?? '' ?>">
+                    </strong>
+                </p>
+                <details>
+                    <summary>Privacy notice</summary>
+                    <p>
+                        Your e-mail address will not be saved on our servers and will be used just to set the reply
+                        address in the e-mail we'll send to this offer's author upon this form's submission.
+                    </p>
+                </details>
+            </fieldset>
+            <fieldset>
+                <p>
+                    Write a short message to this offer's author. Feel free to specify a different communication method
+                    if sending e-mails is not your thing.
+                </p>
+                <p>
+                    <strong>
+                        <label for="message">Your message</label><br>
+                        <textarea name="message" required id="message" rows="5" style="width: 98%;"
+                                  placeholder="Hey, I'm interested in your offer, do you think we could swap our exam dates?
+Reply to this e-mail if your offer is still valid."><?= $_GET['msg'] ?? '' ?></textarea>
+                    </strong>
+                </p>
+            </fieldset>
+            <fieldset>
+                <p style="text-align: center;">
+                    <input type="submit" value="Send Message" style="font-size: 1.5em; font-weight: bold;">
+                </p>
+                <?php if(isset($_GET['e'])) : ?>
+                    <p class="error">
+                        <?= ($_GET['e'] === 'email') ? 'E-mail address is invalid.' : 'No message way filled in.' ?>
+                    </p>
+                <?php endif ?>
+            </fieldset>
+        </form>
+    </article>
+</section>
+<?php require 'Includes/Foot.phtml'; ?>
