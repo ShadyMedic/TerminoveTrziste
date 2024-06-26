@@ -1,0 +1,80 @@
+<?php require 'Includes/Head.phtml'; ?>
+<section>
+    <header>
+        <h1>Place a new offer</h1>
+    </header>
+    <article>
+        <p>Let's get this done quickly.</p>
+        <form method="post" action="/exchange.php">
+            <fieldset>
+                <p>
+                    First, I need your e-mail address. If somebody reacts to your offer, you'll get an e-mail, so you
+                    can accept it.
+                </p>
+                <p>
+                    <strong>
+                        <label for="email-input">Your e-mail address:</label>
+                            <input type="email" maxlength="127" name="email" id="email-input" required style="width: 69%">
+                    </strong>
+                </p>
+                <details>
+                    <summary>Privacy notice</summary>
+                    <p>
+                        Your e-mail will be saved in our database until your advert is deleted (by you or automatically
+                        on its expiration) and will never be forwarded to any third parties.
+                    </p>
+                    <p>
+                        Also, your e-mail will never be displayed publicly anywhere. When somebody reacts to your
+                        advert, they won't be displayed this address. Instead, they'll fill&nbsp;in a contact form and
+                        the message will be forwarded to you by our server. You can then choose whether you reply to the
+                        person and let them know your e-mail address or not.
+                    </p>
+                </details>
+            </fieldset>
+            <fieldset>
+                <p>
+                    Now, I need you to tell me about the exam date you're offering. The easiest and most accurate
+                    way to do it is to share the link to details of your exam date.
+                </p>
+                <details>
+                    <summary>Tutorial</summary>
+                    <ol>
+                        <li>
+                            Log into SIS and go to your Exam dates:<br>
+                            <img src="/public/img/tutor1.jpg" alt="Click the 'Exam dates' button."/>
+                        </li>
+                        <li>
+                            Now, <strong>right-click</strong> the "detail" link:<br>
+                            <img src="/public/img/tutor2.jpg" alt="Right-click the 'detail' link."/>
+                        </li>
+                        <li>
+                            And now just select "Copy link":<br>
+                            <img src="/public/img/tutor3.jpg" alt="Click 'Copy link' in the context menu."/>
+                        </li>
+                        <li>
+                            And paste it into the textbox below:
+                        </li>
+                    </ol>
+                </details>
+                <p>
+                    <strong>
+                        <label for="url-input">Link to your exam date:</label>
+                        <input type="url" maxlength="130" name="link" required id="url-input" style="width:65%">
+                    </strong>
+                </p>
+            </fieldset>
+            <fieldset>
+                <p>Great, now you just need to select the exam dates you want in return.</p>
+                <p style="text-align: center;">
+                    <input type="submit" value="Continue" style="font-size: 1.5em; font-weight: bold;">
+                </p>
+                <?php if(isset($_GET['e'])) : ?>
+                    <p class="error">
+                        <?= ($_GET['e'] === 'email') ? 'Invalid e-mail address' : 'Invalid exam date link'?>
+                    </p>
+                <?php endif ?>
+            </fieldset>
+        </form>
+    </article>
+</section>
+<?php require 'Includes/Foot.phtml'; ?>
