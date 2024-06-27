@@ -7,5 +7,31 @@
         <a href="https://github.com/ShadyMedic/TerminoveTrziste"><img alt="Contribute on GitHub" src="/public/img/github.png" class="repo-btn"></a>
     </p>
 </footer>
+<script>
+    const main = document.querySelector('main');
+    const nav = document.querySelector('nav');
+    const footer = document.querySelector('footer');
+
+    const setMainMargin = () => {
+        const navHeight = nav.offsetHeight;
+        const footerHeight = footer.offsetHeight;
+        main.style.margin = `0 auto ${footerHeight + 10}px`;
+    };
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                setMainMargin();
+            }
+        });
+    });
+
+    observer.observe(document.documentElement);
+
+    window.addEventListener('resize', setMainMargin);
+
+    // Initial call to set the margin
+    setMainMargin();
+</script>
 </body>
 </html>
