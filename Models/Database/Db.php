@@ -51,7 +51,6 @@ class Db
                 return self::$connection->lastInsertId();
             }
         } catch (PDOException $e) {
-            print_r($e);
             throw new DatabaseException('Database query wasn\'t executed successfully.', null, $e, $query,
                 $e->getCode(), $e->errorInfo[2]);
         }

@@ -8,6 +8,9 @@ body {
     padding: 0 10px;
     font: 18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     color: #444;
+
+    display:flex;
+    flex-direction: column;
 }
 
 h1, h2, h3 {
@@ -17,7 +20,11 @@ h1, h2, h3 {
 @media (prefers-color-scheme: dark) {
     body {
         color: #c9d1d9;
-        background: #0d1117
+        background: #0d1117;
+    }
+
+    nav, footer {
+        background: #0d1117;
     }
 
     a:link {
@@ -32,41 +39,53 @@ h1, h2, h3 {
 
 nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 16px;
     width: 100%;
     max-width: 650px;
-    margin: 10px auto;
+    margin: 0 0 10px auto;
     color: #444;
     font-size: 0.9rem;
     line-height: 0.9rem;
+    padding-top: 10px;
     padding-bottom: 0.3rem;
     border-bottom: 2px solid #444;
     position: fixed;
     top: 0;
+    z-index: 1;
+    background-color: white;
 }
 
 nav > a {
     color: black;
     width: 20%;
+    display: table;
     text-align: center;
 }
 
 main {
-    max-height: 86vh;
     overflow-y: auto;
-    height: 86vh;
+    z-index: 0;
 }
 
 footer {
     font-size: 0.65em;
     color: #777;
     text-align: center;
-    width: 100%;
-    max-width: 650px;
+    max-width: 100%;
     margin: 10px auto 0;
     border-top: 2px solid #444;
+    padding: 0 10px;
     position: fixed;
     bottom: 0;
+    z-index: 1;
+    background-color: white;
+}
+
+@media (max-width: 650px) {
+    nav, footer {
+        left: 0;
+    }
 }
 
 img {
@@ -126,6 +145,7 @@ td, th {
     text-align: center;
     text-decoration: unset;
     color: unset;
+    align-content: center;
 }
 
 .flex > a:hover {

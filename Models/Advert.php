@@ -488,15 +488,17 @@ class Advert
     public function sendCreationMail(): bool
     {
         $headers = [
-            'From' => 'Exam Date Marketplace <no-reply@̈́' . $_SERVER['SERVER_NAME'] . '>',
-            'Content-Type' => 'text/plain; charset=UTF-8'
+            'From' => 'Exam Date Marketplace <exams@̈́shadysoft.eu>',
+            'MIME-Version' => '1.0',
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Transfer-Encoding' => '8bit'
         ];
 
         $body =
-            "Hi there.\n" .
-            "You chose to receive a one-time e-mail upon creation of your advert on " . $_SERVER['SERVER_NAME'] . "\n" .
-            "Your advert has successfully been created and published.\n" .
-            "If you want to hide it from listing, start showing it again or delete\n" .
+            "Hi there.\n\n" .
+            "You chose to receive a one-time e-mail upon creation of your advert on " . $_SERVER['SERVER_NAME'] . "\n\n" .
+            "Your advert has successfully been created and published. " .
+            "If you want to hide it from listing, start showing it again or delete " .
             "it, you can do it on the following link:\n" .
             "https://" . $_SERVER['SERVER_NAME'] . "/advert.php?token=" . $this->token . "\n" .
             "\n" .
@@ -506,7 +508,7 @@ class Advert
             "\n" .
             "This e-mail has been automatically generated.";
 
-        $result = mail($this->email, 'Advert created successfully', $body, implode("\r\n", $headers));
+        $result = mail($this->email, 'Advert created successfully', wordwrap($body, 70, "\n"), implode("\n", $headers));
         return $result;
     }
 
@@ -521,24 +523,27 @@ class Advert
     public function answer(string $replyTo, string $message): bool
     {
         $headers = [
-            'From' => 'Exam Date Marketplace <no-reply@̈́' . $_SERVER['SERVER_NAME'] . '>',
-            'Content-Type' => 'text/plain; charset=UTF-8'
+            'From' => 'Exam Date Marketplace <exams@̈́shadysoft.eu>',
+            'MIME-Version' => '1.0',
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Transfer-Encoding' => '8bit'
         ];
 
         $body =
-            "Hi there. Somebody replied to your advert placed on " . $_SERVER['SERVER_NAME'] . "\n" .
+            "Hi there.\n\n" .
+            "Somebody replied to your advert placed on " . $_SERVER['SERVER_NAME'] . "\n" .
             "Their message goes below:\n" .
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" .
-            wordwrap($message, 70, "\n") .
+            wordwrap($message, 70, "\n") . "\n" .
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" .
-            "You can get in touch with the person by sending him an e-mail to:\n" .
+            "You can get in touch with the person by sending him an e-mail to: " .
             "$replyTo\n" .
             "\n" .
-            "Please note that your advert has automatically been deactivated\n" .
-            "and will be deleted after a few days. If you don't come to an agreement\n" .
-            "with the person who reacted, you can reactivate your advert by clicking\n" .
-            "the link below. Please do not reactivate your advert if you exchanged\n" .
-            "your exam date\n" .
+            "Please note that your advert has automatically been deactivated " .
+            "and will be deleted after a few days. If you don't come to an agreement " .
+            "with the person who reacted, you can reactivate your advert by clicking " .
+            "the link below. Please do not reactivate your advert if you exchanged " .
+            "your exam date.\n" .
             "\n" .
             "Reactivate the advert (or delete it instantly):\n" .
             "https://" . $_SERVER['SERVER_NAME'] . "/advert.php?token=" . $this->token . "\n" .
@@ -546,7 +551,7 @@ class Advert
             "\n" .
             "This e-mail has been automatically generated.";
 
-        $result = mail($this->email, 'Somebody is interested in exchanging your exam date for theirs!', $body, implode("\r\n", $headers));
+        $result = mail($this->email, 'Somebody is interested in exchanging your exam date for theirs!', wordwrap($body, 70, "\n"), implode("\n", $headers));
         if ($result) {
             $this->deactivate();
             return true;
