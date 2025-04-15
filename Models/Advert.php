@@ -260,6 +260,7 @@ class Advert
             "&pocet=1000&" .
             "btn_hledat=Search"
         );
+
         if ($html === false) {
             return false;
         }
@@ -282,7 +283,9 @@ class Advert
             return [];
         }
         $dates = [];
+
         foreach ($rows as $row) {
+            if (is_null($xpath->query('./td[8]', $row)->item(0))) { continue; }
             $dateString = $xpath->query('./td[8]', $row)->item(0)->nodeValue;
             $dates[] = DateTime::createFromFormat('M j, Y - l', $dateString)->format('Y-m-d');
         }
@@ -381,6 +384,15 @@ class Advert
     public function isActive(): bool
     {
         return $this->active;
+    }
+
+    /**
+     * Getter for the $highlight attribute
+     * @return bool Whether this advert should be highlighted
+     */
+    public function isHighlighted(): bool
+    {
+        return $this->highlight;
     }
 
     /**
