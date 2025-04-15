@@ -27,10 +27,30 @@ class SubjectManager
 
         $dict = [];
         foreach ($result as $record) {
-            if ($record['language'] === 'CZE') {
-                $dict[$record['code']] = '🇨🇿 '.$record['title_cze'];
-            } else {
-                $dict[$record['code']] = '🇬🇧 '.$record['title'];
+            switch ($record['language']) {
+                case 'CZE':
+                    $dict[$record['code']] = '🇨🇿 '.$record['title_cze'];
+                    break;
+                case 'ENG':
+                    $dict[$record['code']] = '🇬🇧 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
+                    break;
+                case 'GER':
+                    $dict[$record['code']] = '🇩🇪 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
+                    break;
+                case 'FRE':
+                    $dict[$record['code']] = '🇫🇷 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
+                    break;
+                case 'SPA':
+                    $dict[$record['code']] = '🇪🇸 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
+                    break;
+                case 'RUS':
+                    $dict[$record['code']] = '🇷🇺 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
+                    break;
+                case 'ITA':
+                    $dict[$record['code']] = '🇮🇹 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
+                    break;
+                default:
+                    $dict[$record['code']] = '🏳 '.(empty($record['title']) ? $record['title_cze'] : $record['title']);
             }
         }
         return $dict;
