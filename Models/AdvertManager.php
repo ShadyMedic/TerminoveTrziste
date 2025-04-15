@@ -46,7 +46,7 @@ class AdvertManager
      */
     public function loadAdvertsForSubject(string $subjectCode) : array|false
     {
-        $result = Db::fetchQuery('SELECT * FROM advert WHERE subject_code = ? AND active = 1;', [$subjectCode], true);
+        $result = Db::fetchQuery('SELECT * FROM advert WHERE subject_code = ? AND active = 1 ORDER BY highlight DESC;', [$subjectCode], true);
         $adverts = [];
         if ($result === false) {
             return false;
@@ -63,7 +63,7 @@ class AdvertManager
      */
     public function loadAdverts()
     {
-        $result = Db::fetchQuery('SELECT * FROM advert WHERE active = 1;', [], true);
+        $result = Db::fetchQuery('SELECT * FROM advert WHERE active = 1 ORDER BY highlight DESC;', [], true);
         $adverts = [];
         if ($result === false) {
             return false;

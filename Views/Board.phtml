@@ -10,7 +10,7 @@
             <p class="error">No adverts found.</p>
             <p style="text-align: center;">How about <a href="/new.php">creating one</a>?</p>
         <?php else : ?>
-            <table border="1" style="border-collapse: collapse">
+            <table border="1" style="border-collapse: collapse; margin: auto;">
                 <tr>
                     <th colspan="2">Subject</th>
                     <th>Wanted exam date</th>
@@ -18,7 +18,7 @@
                     <th>React</th>
                 </tr>
                 <?php foreach ($adverts as $advert) : ?>
-                    <tr>
+                    <tr <?= ($advert->isHighlighted() ? 'class="highlight"' : '') ?>>
                         <td style="text-align: left;"><?= $advert->getSubject() ?></td>
                         <td>
                             <a href="https://is.cuni.cz/studium/eng/predmety/index.php?do=predmet&kod=<?= $advert->getSubjectCode() ?>"
